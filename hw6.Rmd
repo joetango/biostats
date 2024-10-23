@@ -12,7 +12,8 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r}
 
-## packages list
+## packages 
+## list
 require(faraway)
 require(dplyr)
 require(ggplot2)
