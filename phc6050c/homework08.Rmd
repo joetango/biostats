@@ -1,0 +1,17 @@
+---
+title: "Homework 8"
+output: html_document
+date: "2024-10-24"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+##1. 
+
+```{r}
+
+
+
+```
