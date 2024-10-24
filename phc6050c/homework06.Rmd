@@ -3,7 +3,7 @@
 title: "homework6_phc6050c"
 author: "Joe Dickerson"
 date: "2024-10-04"
-output: pdf_document
+output: rmarkdown::github_document
 ---
 
 ```{r setup, include=FALSE}
