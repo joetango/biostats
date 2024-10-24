@@ -10,8 +10,14 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ##1. 
 
+a. We do not see much effect on the response of the leg length predictor.
+
 ```{r}
 
+data(seatpos, package = "faraway")
 
+lmod <- lm(hipcenter ~ ., seatpos)
+
+summary(lmod)
 
 ```
