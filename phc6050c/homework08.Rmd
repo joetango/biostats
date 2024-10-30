@@ -1,6 +1,6 @@
 ---
 title: "Homework 8"
-output: html_document
+output: pdf_document
 date: "2024-10-24"
 ---
 
@@ -247,4 +247,4 @@ rmse(rgypred,fat10$siri)
 
 ```
 
-Conclusion: We get solid results with both methods of linear regression, all predictors and stepwise variable selection. However, we do not get favorable results with the principal component regression. However, this could be further explored. We also have promising results from the partial least squares and ridge regression methods. 
+Conclusion: We get solid results with both methods of linear regression, all predictors and stepwise variable selection. However, we do not get favorable results with the principal component regression. However, this could be further explored. We also have promising results from the partial least squares and ridge regression methods. It is unclear why the principal component regression performed returned poor results, but perhaps a different testing sample size would change the outcome.
