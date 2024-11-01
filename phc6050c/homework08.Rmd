@@ -1,5 +1,6 @@
 ---
 title: "Homework 8"
+author: "Joseph Dickerson"
 output: pdf_document
 date: "2024-10-24"
 ---
@@ -8,7 +9,7 @@ date: "2024-10-24"
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-##1. 
+## 1. 
 
 a. We do not see significance in the leg predictor on the response.
 
