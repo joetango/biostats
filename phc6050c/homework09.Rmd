@@ -1,0 +1,27 @@
+---
+title: "homework09"
+output: html_document
+date: "2024-11-12"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## 1.
+
+```{r}
+
+data(teengamb, package = "faraway")
+
+lmod <- lm(gamble ~ ., data = teengamb)
+
+teengamb$sex <- as.factor(teengamb$sex)
+
+teengamb
+
+by(teengamb, teengamb$sex, summary)
+
+plot(gamble ~ sex, teengamb)
+
+```
