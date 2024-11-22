@@ -51,7 +51,52 @@ tavern <- paste("The", sample(tavern_adj, 1), sample(tavern_noun, 1))
 print(tavern)
 
 
-
+#d20
 sample(1:20, 1)
+
+#d12
+sample(1:12, 1)
+
+#d10
+sample(1:10, 1)
+
+#d8
+sample(1:8, 1)
+
+#d6
+sample(1:6, 1)
+
+#d4
+sample(1:4, 1)
+
+#d100
+sample(1:100, 1)
+
+```
+
+```{r}
+
+#NPC stat generator 
+
+stat_gen <- function() {
+  stat <- c(sample(1:6, 4, replace = TRUE))
+  stat <- stat[stat != min(stat)]
+  sum(stat)
+}
+
+for(i in 1:6) {
+  temp <- paste0("stat", i)
+  
+  assign(temp, stat_gen())
+}
+
+npc <- paste("Strength:", stat1,
+      "Dexterity:", stat2,
+      "Constitution:", stat3,
+      "Intelligence:", stat4,
+      "Wisdom:", stat5,
+      "Charisma:", stat6, sep = "\n")
+
+cat(npc, sep="\n")
 
 ```
