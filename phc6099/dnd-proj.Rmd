@@ -50,6 +50,9 @@ tavern <- paste("The", sample(tavern_adj, 1), sample(tavern_noun, 1))
 
 print(tavern)
 
+```
+
+```{r}
 
 #d20
 sample(1:20, 1)
@@ -98,5 +101,23 @@ npc <- paste("Strength:", stat1,
       "Charisma:", stat6, sep = "\n")
 
 cat(npc, sep="\n")
+
+```
+
+```{r}
+## Difficulty Class
+
+
+difficulty_check <- function(dc, mod=0){
+  roll <- sample(1:20, 1)
+  if((roll + mod) >= dc){
+    paste("Roll:", roll, "+ Modifer:", mod, "=", (roll + mod), "...Success!")
+  } 
+  else {
+    paste("Roll:", roll, "+ Modifer:", mod, "=", (roll + mod), "...Failure")
+  }
+}
+
+difficulty_check(18, 8)
 
 ```
