@@ -75,12 +75,13 @@ sample(1:4, 1)
 #d100
 sample(1:100, 1)
 
-dice <- function(x, y){
-  val <- c(sample(1:x, y, replace = TRUE))
-  sum(val)
+mult_dice <- function(dice_type, dice_quant){
+  rolls <- c(sample(1:dice_type, dice_quant, replace = TRUE))
+  sum_rolls <- sum(rolls)
+  return(list(rolls = rolls, sum = sum_rolls))
 }
 
-dice(4, 2)
+mult_dice(4, 2)
 
 ```
 

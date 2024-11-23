@@ -15,9 +15,10 @@ difficulty_check <- function(dc, mod){
   }
 }
 
-mult_dice <- function(x, y){
-  rolls <- c(sample(1:x, y, replace = TRUE))
-  sum(rolls)
+mult_dice <- function(dice_type, dice_quant){
+  rolls <- c(sample(1:dice_type, dice_quant, replace = TRUE))
+  sum_rolls <- sum(rolls)
+  paste("Result:", paste(rolls, collapse = " + "), " = ", sum_rolls)
 }
 
   ##############################
@@ -40,29 +41,47 @@ ui <- dashboardPage(
     tabItems(
       tabItem(tabName = "home",
               h2("The Dungeon Master's Multitool")),
+      
       tabItem(tabName = "roller",
               h2("Dice Roller"),
               h2(""),
-              actionButton("run_d20", "Roll d20"),
-              textOutput("d20"),
-              h5(""),
-              actionButton("run_d12", "Roll d12"),
-              textOutput("d12"),
-              h5(""),
-              actionButton("run_d10", "Roll d10"),
-              textOutput("d10"),
-              h5(""),
-              actionButton("run_d8", "Roll d8"),
-              textOutput("d8"),
-              h5(""),
-              actionButton("run_d6", "Roll d6"),
-              textOutput("d6"),
-              h5(""),
-              actionButton("run_d4", "Roll d4"),
-              textOutput("d4"),
-              h5(""),
-              actionButton("run_d100", "Roll d100"),
-              textOutput("d100")),
+              
+              fluidRow(
+                column(6, 
+                       actionButton("run_d20", "Roll d20"),
+                       textOutput("d20", inline = TRUE),
+                       h5(""),
+                       actionButton("run_d12", "Roll d12"),
+                       textOutput("d12", inline = TRUE),
+                       h5(""),
+                       actionButton("run_d10", "Roll d10"),
+                       textOutput("d10", inline = TRUE)
+                ),
+                column(6, 
+                       actionButton("run_d8", "Roll d8"),
+                       textOutput("d8", inline = TRUE),
+                       h5(""),
+                       actionButton("run_d6", "Roll d6"),
+                       textOutput("d6", inline = TRUE),
+                       h5(""),
+                       actionButton("run_d4", "Roll d4"),
+                       textOutput("d4", inline = TRUE),
+                       h5(""),
+                       actionButton("run_d100", "Roll d100"),
+                       textOutput("d100", inline = TRUE)
+                )
+              ),
+              
+              h4("Roll Multiple Dice:"),
+              numericInput("dice_quant", "Quantity of Dice", value = 1),
+              selectInput("die_type", "Sides of the Dice", choices = c(20,
+                                                                 12, 10,
+                                                                 8, 6,
+                                                                 4, 100)),
+              actionButton("mult_roll", "Roll"),
+              textOutput("mult_result")
+      ),
+      
       tabItem(tabName = "dc_check",
               h2("Difficulty Class Check"),
               h2(""),
@@ -79,6 +98,7 @@ ui <- dashboardPage(
               numericInput("mod", "Enter Modifier:", value = 0),
               actionButton("dc_roll", "Roll"),
               textOutput("dc_result")),
+      
       tabItem(tabName = "gens",
               h2("On-the-fly Worldbuilding Generators"),
               h2(""),
@@ -101,6 +121,18 @@ ui <- dashboardPage(
   ######################
 
 server <- function(input, output){
+  
+  ####################################
+  ####### Multiple Dice Roller #######
+  ####################################
+  
+  mult_result <- eventReactive(input$mult_roll, {
+    mult_dice(as.numeric(input$die_type), input$dice_quant)
+  })
+  
+  output$mult_result <- renderText({
+    mult_result()
+  })
   
   ######################################
   ####### Difficulty Class Check #######
@@ -253,32 +285,34 @@ server <- function(input, output){
     d100(sample(1:100, 1))
   })
   
+  ##############################
+  
   output$d20 <- renderText ({
-    paste("d20 result:", d20())
+    paste(d20())
   })
   
   output$d12 <- renderText ({
-    paste("d12 result:", d12())
+    paste(d12())
   })
   
   output$d10 <- renderText ({
-    paste("d10 result:", d10())
+    paste(d10())
   })
   
   output$d8 <- renderText ({
-    paste("d8 result:", d8())
+    paste(d8())
   })
   
   output$d6 <- renderText ({
-    paste("d6 result:", d6())
+    paste(d6())
   })
   
   output$d4 <- renderText ({
-    paste("d4 result:", d4())
+    paste(d4())
   })
   
   output$d100 <- renderText ({
-    paste("d100 result:", d100())
+    paste(d100())
   })
   
 }
