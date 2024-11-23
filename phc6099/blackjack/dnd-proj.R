@@ -85,7 +85,6 @@ server <- function(input, output) {
     difficulty_check(as.numeric(input$dc), input$mod)
   })
   
-  ## Tavern Name Generator
   
   observeEvent(input$generate_npc, {
     stat_gen <- function() {

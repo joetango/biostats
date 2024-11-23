@@ -1,4 +1,5 @@
 library(shiny)
+library(shinydashboard)
 
 ## Global Functions
 
@@ -15,15 +16,30 @@ difficulty_check <- function(dc1, mod1=0){
 }
 
 
-ui <- fluidPage(
-  h4("Difficulty Check"),
-  selectInput("dc", "Select Difficulty Class", choices = c(1:20)),
-  numericInput("mod", "Enter Modifier:", value = 0),
-  actionButton("dc_roll", "Roll"),
-  textOutput("dc_result")
+ui <- dashboardPage(
+  
+  dashboardHeader("Dungeon Master's Multitool"),
+  dashboardSidebar(sidebarMenu(id = "menu", sidebarMenuOutput("menu"))),
+  dashboardBody(tabItems(
+    tabItem(
+      tabName = "DC")
+    )
+  ))
+  
+  sidebarLayout(
+  
+    sidebarPanel(
+      h5("Difficulty Check"),
+      selectInput("dc", "Select Difficulty Class", choices = c(1:20)),
+      numericInput("mod", "Enter Modifier:", value = 0),
+      actionButton("dc_roll", "Roll")
 
-
-) #ui
+    ), #difficultyCheck tabPanel
+    
+  mainPanel(
+    textOutput("dc_result")
+  )
+) #navbarPage
 
 
 server <- function(input, output) {

@@ -75,6 +75,13 @@ sample(1:4, 1)
 #d100
 sample(1:100, 1)
 
+dice <- function(x, y){
+  val <- c(sample(1:x, y, replace = TRUE))
+  sum(val)
+}
+
+dice(4, 2)
+
 ```
 
 ```{r}
