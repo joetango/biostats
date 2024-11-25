@@ -21,6 +21,14 @@ mult_dice <- function(dice_type, dice_quant){
   paste("Result:", paste(rolls, collapse = " + "), " = ", sum_rolls)
 }
 
+hp_down <- function(x){
+  return(x + 1)
+}
+
+hp_up <- function(x){
+  return(x - 1)
+}
+
   ##############################
   ####### User Interface #######
   ##############################
@@ -33,14 +41,19 @@ ui <- dashboardPage(
       menuItem("Home", tabName = "home"),
       menuItem("Dice Roller", tabName = "roller"),
       menuItem("Difficulty Class Check", tabName = "dc_check"),
-      menuItem("Worldbuilding Generators", tabName = "gens")
+      menuItem("Worldbuilding Generators", tabName = "gens"),
+      menuItem("Combat Tracker", tabName = "combat")
     )
   ),
   
   dashboardBody(
     tabItems(
       tabItem(tabName = "home",
-              h2("The Dungeon Master's Multitool")),
+              h2("The Dungeon Master's Multitool"),
+              h2(""),
+              h4("Every dungeon master can use a hand for some quick improvisation or calculations.
+                 Let this tool guide you."),
+              img(src = "agoblin1.png", align = "center")),
       
       tabItem(tabName = "roller",
               h2("Dice Roller"),
@@ -94,9 +107,10 @@ ui <- dashboardPage(
                  add +2 to the roll for jumping over the crevasse). The
                  program will do the rest for you."),
               h2(""),
-              selectInput("dc", "Set Difficulty Class", choices = c(1:20)),
+              selectInput("dc", "Set Difficulty Class", choices = c(5, 10, 15, 20,
+                                                                    25, 30)),
               numericInput("mod", "Enter Modifier:", value = 0),
-              actionButton("dc_roll", "Roll"),
+              actionButton("dc_roll", "Roll", class = "btn-block"),
               textOutput("dc_result")),
       
       tabItem(tabName = "gens",
@@ -111,7 +125,23 @@ ui <- dashboardPage(
               textOutput("npc_stats"),
               h1(""),
               actionButton("run_tavern", "Generate Tavern Name"),
-              textOutput("tavern"))
+              textOutput("tavern"),
+              h1(""),
+              actionButton("run_potion", "Generate Potion"),
+              textOutput("potion")),
+      
+      tabItem(tabName = "combat",
+              h2("Combat Tracker"),
+              h2(""),
+              p("Enter the amount of enemies and a table will appear to help keep track of
+                an instance of combat. Use the arrows or your numpad to change the
+                enemy HP."),
+              numericInput("enemy_quant", "How many enemies?", value = 0, min = 0,
+                           max = 10),
+              uiOutput("enemy_inputs"),
+              tableOutput("combat_stats"))
+              # actionButton("run_d20", "Roll d20"),
+              # textOutput("d20", inline = TRUE))
     )
   )
 )  
@@ -121,6 +151,135 @@ ui <- dashboardPage(
   ######################
 
 server <- function(input, output){
+  
+  ##############################
+  ####### Combat Tracker #######
+  ##############################
+  
+  enemies <- reactiveVal(data.frame(Enemy = character(0), HP = numeric(0),
+                                    AC = numeric(0)))
+  
+  output$enemy_inputs <- renderUI({
+    n <- input$enemy_quant
+    
+    if(n==0){
+      return(NULL)
+    }
+    
+    lapply(1:n, function(i){
+      fluidRow(
+        column(6, textInput(paste0("enemy_name_", i), label = paste("Enemy", i, "Name"), value = paste("Enemy", i))),
+        column(3, numericInput(paste0("enemy_hp_", i), label = paste("HP", i), value = 10, min = 1, max = 100)),
+        column(3, numericInput(paste0("enemy_ac_", i), label = paste("AC", i), value = 15, min = 1, max = 30))
+      )
+    })
+  })
+  
+  observeEvent(input$hp_up_btn, {
+    n <- input$enemy_quant
+    if (n > 0) {
+      for (i in 1:n) {
+        
+        enemy_hp <- input[[paste0("enemy_hp_", i)]]
+        new_hp <- hp_up(enemy_hp)
+        updateNumericInput(session, paste0("enemy_hp_", i), value = new_hp)
+      }
+    }
+  })
+  
+  observeEvent(input$hp_down_btn, {
+    n <- input$enemy_quant
+    if (n > 0) {
+      for (i in 1:n) {
+        
+        enemy_hp <- input[[paste0("enemy_hp_", i)]]
+        new_hp <- hp_down(enemy_hp)
+        updateNumericInput(session, paste0("enemy_hp_", i), value = new_hp)
+      }
+    }
+  })
+  
+  observe({
+    n <- input$enemy_quant
+    if (n > 0) {
+      
+      enemy_data <- data.frame(Enemy = character(0), HP = numeric(0), AC = numeric(0))
+      for (i in 1:n) {
+        enemy_data <- rbind(enemy_data, data.frame(
+          Enemy = input[[paste0("enemy_name_", i)]],
+          HP = input[[paste0("enemy_hp_", i)]],
+          AC = input[[paste0("enemy_ac_", i)]]
+        ))
+      }
+      enemies(enemy_data)
+    }
+  })
+  
+  
+  output$combat_stats <- renderTable({
+    enemies()
+  })
+
+  
+  ################################
+  ####### Potion Generator #######
+  ################################
+  
+  potion <- reactiveVal(NULL)
+
+  observeEvent(input$run_potion, {
+
+    container <- c("A glass statuette of a God", "A thin glass vial", "A leather pouch",
+                   "A drinking horn", "A metal flask", "A hallowed out crystal",
+                   "The sealed bone of an ogre", "A short, fat, glass jar",
+                   "A wooden jar with a cork", "An ornate iron flagon", "A syringe",
+                   "A clay urn", "A glass skull", "A shot-glass sized container",
+                   "A fist-sized barrel", "A sealed, ornate tankard",
+                   "A hallowed out dragon tooth", "A glass sphere with a cork",
+                   "A repurpsed scorpion tail", "A small bronze container")
+
+    color <- c("white", "lime green", "bronze", "purple", "ruby", "pale blue",
+               "forest green", "lavender", "orange", "plum", "silver", "black",
+               "jade", "peach", "red", "yellow", "azure", "olive", "sky blue", "tan")
+
+    effect <- c("instantly restores some health (2d6 + 2)",
+                "gives the strength of a giant for ten minutes",
+                "makes the drinker double in size",
+                "cures an illness",
+                "doubles speed for one hour",
+                "ages the drinker by five years",
+                "temporarily turns the drinker's teeth into stone",
+                "puts the drinker into a coma for 6 hours",
+                "gives resistence to acid damage for one hour",
+                "increases acrobatics for one hour",
+                "instantly grows a beard on the drinker",
+                "turns the drinker invisible for 10 minutes",
+                "grants levitation for two minutes",
+                "forces the drinker to tell the truth for one hour",
+                "grants a temporary increase in max health until the health is lost",
+                "grants the drinker underwater breathing for twenty minutes",
+                "gives the user a single vision of the future",
+                "makes the drinker lose sight for one hour",
+                "lets the drinker ask their deity one question",
+                "gives the drinker a slight experience boost"
+    )
+
+    result <- paste(sample(container, 1), "containing a liquid of", sample(color, 1),
+                    "color that", sample(effect, 1))
+
+    potion(result)
+  })
+
+  output$potion <- renderText({
+    if (!is.null(potion())) {
+      paste(potion())
+    }
+    else {
+      "[click button to generate a potion]"
+    }
+
+  })
+  
   
   ####################################
   ####### Multiple Dice Roller #######

@@ -129,3 +129,64 @@ difficulty_check <- function(dc, mod=0){
 difficulty_check(18, 8)
 
 ```
+
+```{r}
+
+container <- c("A glass statuette of a God", "A thin glass vial", "A leather pouch",
+               "A drinking horn", "A metal flask", "A hallowed out crystal",
+               "The sealed bone of an ogre", "A short, fat, glass jar",
+               "A wooden jar with a cork", "An ornate iron flagon", "A syringe",
+               "A clay urn", "A glass skull", "A shot-glass sized container",
+               "A fist-sized barrel", "A sealed, ornate tankard",
+               "A hallowed out dragon tooth", "A glass sphere with a cork",
+               "A repurpsed scorpion tail", "A small bronze container")
+
+color <- c("white", "lime green", "bronze", "purple", "ruby", "pale blue",
+           "forest green", "lavender", "orange", "plum", "silver", "black",
+           "jade", "peach", "red", "yellow", "azure", "olive", "sky blue", "tan")
+
+effect <- c("instantly restores some health (2d6 + 2)",
+            "gives the strength of a giant for ten minutes",
+            "makes the drinker double in size",
+            "cures an illness",
+            "doubles speed for one hour",
+            "ages the drinker by five years",
+            "temporarily turns the drinker's teeth into stone",
+            "puts the drinker into a coma for 6 hours",
+            "gives resistence to acid damage for one hour",
+            "increases acrobatics for one hour",
+            "instantly grows a beard on the drinker",
+            "turns the drinker invisible for 10 minutes",
+            "grants levitation for two minutes",
+            "forces the drinker to tell the truth for one hour",
+            "grants a temporary increase in max health until the health is lost",
+            "grants the drinker underwater breathing for twenty minutes",
+            "gives the user a single vision of the future",
+            "makes the drinker lose sight for one hour",
+            "lets the drinker ask their deity one question",
+            "gives the drinker a slight experience boost"
+            )
+
+tavern <- paste(sample(container, 1), "containing a liquid of", sample(color, 1),
+                "color that", sample(effect, 1))
+
+print(tavern)
+
+```
+
+```{r}
+
+hp_down <- function(x){
+  hp <- x
+  hp <- x - 1
+}
+
+hp_up <- function(x){
+  hp <- x
+  hp <- x + 1
+}
+
+print(hp_down(20))
+print(hp_up(20))
+
+```
