@@ -25,6 +25,7 @@ teengamb$sex <- as.factor(teengamb$sex)
 by(teengamb, teengamb$sex, summary)
 
 lmod <- lm(gamble ~ income + sex + sex*income, data = teengamb)
+#full model with everything sex*(status+income+verbal)
 
 summary(lmod)
 

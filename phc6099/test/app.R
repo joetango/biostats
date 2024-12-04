@@ -139,9 +139,9 @@ ui <- dashboardPage(
               numericInput("enemy_quant", "How many enemies?", value = 0, min = 0,
                            max = 10),
               uiOutput("enemy_inputs"),
-              tableOutput("combat_stats"))
-              # actionButton("run_d20", "Roll d20"),
-              # textOutput("d20", inline = TRUE))
+              tableOutput("combat_stats"),
+              actionButton("run_d20_2", "Roll d20"),
+              textOutput("d20_2", inline = TRUE))
     )
   )
 )  
@@ -156,8 +156,18 @@ server <- function(input, output){
   ####### Combat Tracker #######
   ##############################
   
+  d20_2 <- reactiveVal(NULL)
+  
   enemies <- reactiveVal(data.frame(Enemy = character(0), HP = numeric(0),
                                     AC = numeric(0)))
+  
+  observeEvent(input$run_d20_2, {
+    d20_2(sample(1:20, 1))
+  })
+  
+  output$d20_2 <- renderText ({
+    paste(d20_2())
+  })
   
   output$enemy_inputs <- renderUI({
     n <- input$enemy_quant
@@ -169,8 +179,8 @@ server <- function(input, output){
     lapply(1:n, function(i){
       fluidRow(
         column(6, textInput(paste0("enemy_name_", i), label = paste("Enemy", i, "Name"), value = paste("Enemy", i))),
-        column(3, numericInput(paste0("enemy_hp_", i), label = paste("HP", i), value = 10, min = 1, max = 100)),
-        column(3, numericInput(paste0("enemy_ac_", i), label = paste("AC", i), value = 15, min = 1, max = 30))
+        column(3, numericInput(paste0("enemy_hp_", i), label = paste("HP", i), value = 20, min = 1, max = 1000)),
+        column(3, numericInput(paste0("enemy_ac_", i), label = paste("AC", i), value = 12, min = 1, max = 30))
       )
     })
   })
