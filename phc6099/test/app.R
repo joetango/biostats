@@ -51,9 +51,10 @@ ui <- dashboardPage(
       tabItem(tabName = "home",
               h2("The Dungeon Master's Multitool"),
               h2(""),
-              h4("Every dungeon master can use a hand for some quick improvisation or calculations.
-                 Let this tool guide you."),
+              h4("An application to provide quick help to a dungeon master in need.
+                 Use the sidebar to navigate the various tools."),
               img(src = "agoblin1.png", align = "center")),
+              
       
       tabItem(tabName = "roller",
               h2("Dice Roller"),
@@ -110,7 +111,7 @@ ui <- dashboardPage(
               selectInput("dc", "Set Difficulty Class", choices = c(5, 10, 15, 20,
                                                                     25, 30)),
               numericInput("mod", "Enter Modifier:", value = 0),
-              actionButton("dc_roll", "Roll", class = "btn-block"),
+              actionButton("dc_roll", "Roll"),
               textOutput("dc_result")),
       
       tabItem(tabName = "gens",
@@ -134,8 +135,9 @@ ui <- dashboardPage(
               h2("Combat Tracker"),
               h2(""),
               p("Enter the amount of enemies and a table will appear to help keep track of
-                an instance of combat. Use the arrows or your numpad to change the
-                enemy HP."),
+                an instance of combat. First, enter a number of enemies to keep track of.
+                Then, use the arrows on the input field or your keyboard to change the enemy HP and AC.
+                A d20 is included on this page for convenience."),
               numericInput("enemy_quant", "How many enemies?", value = 0, min = 0,
                            max = 10),
               uiOutput("enemy_inputs"),
@@ -171,6 +173,8 @@ server <- function(input, output){
   
   output$enemy_inputs <- renderUI({
     n <- input$enemy_quant
+    
+    req(n >= 0)
     
     if(n==0){
       return(NULL)
@@ -211,6 +215,9 @@ server <- function(input, output){
   
   observe({
     n <- input$enemy_quant
+    
+    req(n > 0)
+    
     if (n > 0) {
       
       enemy_data <- data.frame(Enemy = character(0), HP = numeric(0), AC = numeric(0))
@@ -371,7 +378,7 @@ server <- function(input, output){
                     "Rotten", "Shining", "Fragile", "Hungry", "Tired",
                     "Patient", "Merciful", "Immortal", "Faithful", "Friendly",
                     "Forlorn", "Adoring", "Brittle", "Floating", "Sharp",
-                    "Worn", "Cursed", "Beautiful", "Beleoved", "Quiet",
+                    "Worn", "Cursed", "Beautiful", "Beloved", "Quiet",
                     "Happy", "Courageous", "Wounded", "Blind", "Clairvoyant",
                     "Blushing", "Calm", "Wary", "Cheerful", "Wise", "Clumsy",
                     "Boorish", "Boastful", "Sly", "Daring", "Rebellious",
